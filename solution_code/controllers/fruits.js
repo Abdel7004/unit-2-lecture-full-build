@@ -9,16 +9,25 @@ router.post('/', async (req, res) => {
 });
 
 // Index
-router.get('/', async (req, res) => {
-	const fruits = await Fruit.find({});
-	res.send(fruits);
+router.get('/', (req, res) => {
+	Fruit.find({})
+	.then((fruits) => {
+		// res.send(fruits);
+		res.render("fruits/index.ejs", {fruits});
+	})
+	
 });
 
 // Seed
-router.get('/seed', async (req, res) => {
-	await Fruit.deleteMany({});
-	await Fruit.create(startFruits);
-	res.redirect('/fruits');
+router.get('/seed', (req, res) => {
+	Fruit.deleteMany({})
+	.then(() => {
+		Fruit.insertMany(startFruits)
+		.then((fruits) => {
+			console.log(fruits);//show us what we got
+			res.redirect('/fruits');
+		})
+	})
 });
 
 // Show
